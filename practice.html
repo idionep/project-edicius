@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>practice page</title>
+</head>
+<body>
+    <h1>PRACTICE PAGE</h1>
+    <input type="text" id="noteTitle" placeholder="Enter note title" />
+  <textarea id="noteContent" placeholder="Write bro..."></textarea>
+  <button onclick="saveNote()">Save Note</button>
+
+  <h2>Your Notes</h2>
+  <div id="noteList"></div>
+
+
+    <script>
+    function saveNote() {
+      const title = document.getElementById("noteTitle").value.trim();
+      const content = document.getElementById("noteContent").value;
+
+      if (title === "") {
+        alert("Please enter a title!");
+        return;
+      }
+
+      localStorage.setItem("note_" + title, content);
+      loadNotes();
+      alert("✅ Note saved: " + title);
+    }
+
+    function loadNotes() {
+      const noteList = document.getElementById("noteList");
+      noteList.innerHTML = "";
+
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+
+        if (key.startsWith("note_")) {
+          const title = key.replace("note_", "");
+          const noteDiv = document.createElement("div");
+          noteDiv.className = "note-item";
+
+          const titleSpan = document.createElement("span");
+          titleSpan.className = "note-title";
+          titleSpan.innerText = title;
+          titleSpan.onclick = function () {
+            document.getElementById("noteTitle").value = title;
+            document.getElementById("noteContent").value = localStorage.getItem(key);
+          };
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.className = "delete-btn";
+          deleteBtn.innerText = "Delete";
+          deleteBtn.onclick = function () {
+            if (confirm("Delete note: " + title + "?")) {
+              localStorage.removeItem(key);
+              loadNotes();
+            }
+          };
+
+          noteDiv.appendChild(titleSpan);
+          noteDiv.appendChild(deleteBtn);
+          noteList.appendChild(noteDiv);
+        }
+      }
+    }
+
+    loadNotes(); // Load notes on page load
+  </script>
+    
+</body>
+</html>

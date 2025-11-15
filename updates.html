@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>updates</title>
+</head>
+<body>
+    <h1>UPDATES</h1>
+    <br>
+    <h3>a place where i input whatever i want, mostly on updates on the projects</h3>
+    <a href="index.html">back to main</a>
+    <br>
+
+    <!DOCTYPE html>
+<html>
+<body>
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Notes App</h2>
+
+<input id="noteTitle" placeholder="Title"><br><br>
+
+<textarea id="noteContent" placeholder="Content" style="width:240px; height:200px;"></textarea>
+<br><br>
+
+<button onclick="saveNote()">Save</button>
+
+<h3>Notes</h3>
+<div id="noteList"></div>
+
+<script>
+function saveNote() {
+  const title = document.getElementById("noteTitle").value.trim();
+  const content = document.getElementById("noteContent").value;
+
+  if (title === "") {
+    alert("Enter a title");
+    return;
+  }
+
+  localStorage.setItem("note_" + title, content);
+  loadNotes();
+}
+// Auto-save every 1 minute
+setInterval(function () {
+  const title = document.getElementById("noteTitle").value.trim();
+  if (title !== "") {
+    saveNote();
+    console.log("Auto-saved: " + title);
+  }
+}, 60000);
+
+
+function loadNotes() {
+  const noteList = document.getElementById("noteList");
+  noteList.innerHTML = "";
+
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+
+    if (key.startsWith("note_")) {
+      const title = key.replace("note_", "");
+
+      const wrapper = document.createElement("div");
+
+      const titleText = document.createElement("span");
+      titleText.innerText = title;
+
+      const openBtn = document.createElement("button");
+      openBtn.innerText = "Open";
+      openBtn.onclick = function() {
+        document.getElementById("noteTitle").value = title;
+        document.getElementById("noteContent").value = localStorage.getItem(key);
+      };
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.innerText = "Delete";
+      deleteBtn.onclick = function() {
+        if (confirm("Delete " + title + "?")) {
+          localStorage.removeItem(key);
+          loadNotes();
+        }
+      };
+
+      wrapper.appendChild(titleText);
+      wrapper.appendChild(openBtn);
+      wrapper.appendChild(deleteBtn);
+
+      noteList.appendChild(wrapper);
+    }
+  }
+}
+
+loadNotes();
+</script>
+
+</body>
+</html>
